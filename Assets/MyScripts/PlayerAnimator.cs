@@ -8,6 +8,7 @@ public class PlayerAnimator : MonoBehaviour
     private const string IS_WALKING = "IsWalking";
     private const string IS_PUSHING = "IsPushing";
     private const string PUSH_SPEED = "PushSpeed";
+    private const string ISIDLE = "IsIdle";
 
     private Animator animator;
     void Start()
@@ -16,6 +17,11 @@ public class PlayerAnimator : MonoBehaviour
     }
     
 
+
+    public void SetIdleState(bool isIdle)
+    {
+        animator.SetBool(ISIDLE, isIdle);
+    }
 
     public void SetWalkingState(bool isWalking)
     {

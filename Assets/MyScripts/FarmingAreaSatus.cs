@@ -12,6 +12,15 @@ public class FarmingAreaSatus : MonoBehaviour
     [SerializeField] private Transform readyToPlantParent;
 
 
+
+
+    private void Update()
+    {
+        //IsGrassCompleted();
+        //IsPreparedLandCompleted();
+    }
+
+
     public bool IsGrassCompleted()
     {
         grassChunksNumber = grassParent.childCount;
@@ -39,9 +48,9 @@ public class FarmingAreaSatus : MonoBehaviour
                 }
             }
         }
-        Debug.Log(activeChunkCount);
+        
 
-        if (activeChunkCount >= farmingAreaChunksNumber)
+        if (activeChunkCount >= 512)
         {
             return true;
         }

@@ -1,17 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public static Player Instance { get; private set; }
+
     [SerializeField] private GameInput gameInput;
     [SerializeField] private PlayerAnimator playerAnimator;
-    [SerializeField] private float moveSpeed = 4f;
-    [SerializeField] float rotateSpeed = 10f;
-    [SerializeField] Transform playerHoldPoint;
+    [SerializeField] private float moveSpeed;
+    [SerializeField] private float rotateSpeed;
+    [SerializeField] private Transform playerToolHoldPoint;
+    [SerializeField] private Transform collectablesHoldPoint;
 
+    private bool isWalking;
+    private bool isPushing;
 
-    private enum State
+    public enum State
     {
         Idle,
         Walking,
@@ -19,20 +22,18 @@ public class Player : MonoBehaviour
         Driving,
     }
 
+    public State state;
 
-    private State state;
-
-    private bool isWalking;
-    private bool isPushing;
-
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
         state = State.Idle;
     }
 
-
-    // Update is called once per frame
     void Update()
     {
         switch (state)
@@ -47,57 +48,62 @@ public class Player : MonoBehaviour
                 HandlePushing();
                 break;
         }
-
     }
+
     private void HandleIdle()
     {
         Vector2 inputVector = gameInput.GetMovementVector();
-        if (inputVector != Vector2.zero)
+        if (inputVector != Vector2.zero && !PlayerHasTool())
         {
             state = State.Walking;
             isWalking = true;
             playerAnimator.SetWalkingState(true);
         }
+        else
+        {
+            playerAnimator.SetWalkingState(false);
+            playerAnimator.SetPushingState(false);
+            playerAnimator.SetPushSpeed(1);
+        }
+        
+       
     }
+
     private void HandleMovement()
     {
         Vector2 inputVector = gameInput.GetMovementVector();
         if (inputVector == Vector2.zero)
         {
-            //player is not moving 
             if (isWalking)
             {
-                //player was moving and then stop
                 playerAnimator.SetWalkingState(false);
                 isWalking = false;
                 state = State.Idle;
             }
             return;
         }
+
         Vector3 moveDir = new Vector3(inputVector.x, 0, inputVector.y);
         transform.position += moveDir * moveSpeed * Time.deltaTime;
         transform.forward = Vector3.Slerp(transform.forward, moveDir, rotateSpeed * Time.deltaTime);
+
         if (!isWalking)
         {
-
-            //player was not moving and then started to move
             playerAnimator.SetWalkingState(true);
             isWalking = true;
             state = State.Walking;
         }
-
     }
-
 
     private void HandlePushing()
     {
         Vector2 inputVector = gameInput.GetMovementVector();
         if (inputVector == Vector2.zero)
         {
-            
+
             if (isPushing)
             {
-                
+
                 playerAnimator.SetPushingState(true);
                 playerAnimator.SetPushSpeed(0);
                 isPushing = false;
@@ -111,38 +117,41 @@ public class Player : MonoBehaviour
         {
             playerAnimator.SetWalkingState(true);
             playerAnimator.SetPushSpeed(1);
+            rotateSpeed = 20f;
             isPushing = true;
         }
     }
 
-
-
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    if (collision.transform.TryGetComponent(out FarmingTool farmingTool))
-    //    {
-    //        farmingTool.PlayerUseTool(playerHoldPoint);
-    //        playerAnimator.SetPushingState(true);
-    //        state = State.Pushing;
-    //    }
-    //}
-
     private void OnTriggerEnter(Collider other)
     {
-        if (other.transform.TryGetComponent(out FarmingTool farmingTool))
+        if (other.TryGetComponent(out FarmingTool farmingTool))
         {
-            farmingTool.PlayerUseTool(playerHoldPoint);
+            farmingTool.PlayerUseTool(playerToolHoldPoint);
             playerAnimator.SetPushingState(true);
             state = State.Pushing;
         }
     }
-
-
 
     public bool IsWalking()
     {
         return isWalking;
     }
 
-  
+    public bool PlayerHasCollectables()
+    {
+        return collectablesHoldPoint.childCount != 0;
+    }
+
+    public bool PlayerHasTool()
+    {
+        
+        return playerToolHoldPoint.childCount != 0;
+    }
+
+    public Transform GetCollectablesHoldPoint()
+    {
+        return collectablesHoldPoint;
+    }
+
+   
 }

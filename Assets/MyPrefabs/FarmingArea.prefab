@@ -116,6 +116,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4243011059318505800}
   - component: {fileID: 6094615860741473250}
+  - component: {fileID: 6308660184587112602}
   m_Layer: 3
   m_Name: FarmingArea
   m_TagString: Untagged
@@ -132,14 +133,14 @@ Transform:
   m_GameObject: {fileID: 2469518541128161303}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 0.46033, z: 1}
+  m_LocalScale: {x: 0.6626368, y: 0.3050316, z: 0.6626368}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3729849724191809524}
   - {fileID: 8014116268814405261}
   - {fileID: 5359518902391439748}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6094615860741473250
 MonoBehaviour:
@@ -155,6 +156,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grassParent: {fileID: 3729849724191809524}
   readyToPlantParent: {fileID: 8014116268814405261}
+--- !u!65 &6308660184587112602
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2469518541128161303}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 9.863261, y: 0.9999996, z: 5.352334}
+  m_Center: {x: 2.7548604, y: 0, z: -7.5327916}
 --- !u!1 &4759075161465408172
 GameObject:
   m_ObjectHideFlags: 0
