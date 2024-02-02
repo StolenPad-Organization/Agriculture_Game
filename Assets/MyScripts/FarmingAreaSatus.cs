@@ -5,9 +5,10 @@ using UnityEngine;
 
 public class FarmingAreaSatus : MonoBehaviour
 {
-    private int farmingAreaChunksNumber = 512;
+    [SerializeField] private int farmingAreaChunksNumber = 512;
     private int grassChunksNumber = 0;
     private int activeChunkCount = 0;
+    private int plantsNumber = 0;
     [SerializeField] private Transform grassParent;
     [SerializeField] private Transform readyToPlantParent;
 
@@ -21,7 +22,7 @@ public class FarmingAreaSatus : MonoBehaviour
     }
 
 
-    public bool IsGrassCompleted()
+    public bool IsCleaningCompleted()
     {
         grassChunksNumber = grassParent.childCount;
         if (grassChunksNumber <= 0)
@@ -35,7 +36,7 @@ public class FarmingAreaSatus : MonoBehaviour
         }
     }
 
-    public bool IsPreparedLandCompleted()
+    public bool IsLoosingCompleted()
     {
         activeChunkCount = 0;
         foreach (Transform child in readyToPlantParent)
@@ -50,7 +51,7 @@ public class FarmingAreaSatus : MonoBehaviour
         }
         
 
-        if (activeChunkCount >= 512)
+        if (activeChunkCount >= farmingAreaChunksNumber)
         {
             return true;
         }
@@ -59,6 +60,30 @@ public class FarmingAreaSatus : MonoBehaviour
             return false;
         }
 
+    }
+
+    public bool IsPlantingComplete()
+    {
+        plantsNumber = 0;
+        foreach(Transform child in readyToPlantParent)
+        {
+            if(child.GetChild(0).TryGetComponent(out Transform transform))
+            {
+                if(transform.gameObject.activeSelf)
+                {
+                    plantsNumber++;
+                }
+            }
+        }
+        if (plantsNumber >= farmingAreaChunksNumber)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        
     }
 
     public Transform GetFarmingArea()

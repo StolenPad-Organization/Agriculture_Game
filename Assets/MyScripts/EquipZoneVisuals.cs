@@ -17,27 +17,9 @@ public class EquipZoneVisuals : MonoBehaviour
     private void EquipZone_OnEquipTool(object sender, EquipZone.OnEquipToolEvetnArgs e)
     {
         barImage.fillAmount = e.progressNormalized;
-        Debug.Log(e.progressNormalized);
-        if (e.progressNormalized == 0 || e.progressNormalized == 1)
-        {
-            Hide();
-            Debug.Log("hide");
-        }
-        else
-        {
-            Debug.Log("show");
-            Show();
-        }
+        
     }
 
-    private void Show()
-    {
-        gameObject.SetActive(true);
-    }
-
-    private void Hide()
-    {
-        gameObject.SetActive(false);
-    }
+    
 }
 

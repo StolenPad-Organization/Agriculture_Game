@@ -18,7 +18,7 @@ public class Selling : MonoBehaviour
     [SerializeField] private FarmedObjectSO farmedObjectSO; 
 
     private float sellingTimer;
-    private float sellingTimerMax = 0.05f;
+    private float sellingTimerMax = 0.01f;
     private float waitForPlayerTimer;
     private float waitForPlayerTimerMax = 2f;
 

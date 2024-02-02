@@ -8,7 +8,8 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerAnimator playerAnimator;
     [SerializeField] private float moveSpeed;
     [SerializeField] private float rotateSpeed;
-    [SerializeField] private Transform playerToolHoldPoint;
+    [SerializeField] private Transform playerPushingToolHoldPoint;
+    [SerializeField] private Transform playerHandToolHoldPoint;
     [SerializeField] private Transform collectablesHoldPoint;
 
     private bool isWalking;
@@ -29,12 +30,12 @@ public class Player : MonoBehaviour
         Instance = this;
     }
 
-    void Start()
+    private void Start()
     {
         state = State.Idle;
     }
 
-    void Update()
+    private void Update()
     {
         switch (state)
         {
@@ -53,7 +54,7 @@ public class Player : MonoBehaviour
     private void HandleIdle()
     {
         Vector2 inputVector = gameInput.GetMovementVector();
-        if (inputVector != Vector2.zero && !PlayerHasTool())
+        if (inputVector != Vector2.zero && !PlayerHasPushingTool())
         {
             state = State.Walking;
             isWalking = true;
@@ -65,8 +66,8 @@ public class Player : MonoBehaviour
             playerAnimator.SetPushingState(false);
             playerAnimator.SetPushSpeed(1);
         }
-        
-       
+
+
     }
 
     private void HandleMovement()
@@ -126,9 +127,18 @@ public class Player : MonoBehaviour
     {
         if (other.TryGetComponent(out FarmingTool farmingTool))
         {
-            farmingTool.PlayerUseTool(playerToolHoldPoint);
-            playerAnimator.SetPushingState(true);
-            state = State.Pushing;
+            if(farmingTool.toolName == FarmingTool.ToolName.CleaningAndLoosingFarmTool || farmingTool.toolName == FarmingTool.ToolName.PlantingTool)
+            {
+                farmingTool.PlayerUseTool(playerPushingToolHoldPoint);
+                
+                playerAnimator.SetPushingState(true);
+                state = State.Pushing;
+            }
+            if(farmingTool.toolName == FarmingTool.ToolName.WateringTool)
+            {
+                farmingTool.PlayerHoldToolInHand(playerHandToolHoldPoint);
+            }
+            
         }
     }
 
@@ -142,10 +152,14 @@ public class Player : MonoBehaviour
         return collectablesHoldPoint.childCount != 0;
     }
 
-    public bool PlayerHasTool()
+    public bool PlayerHasPushingTool()
     {
-        
-        return playerToolHoldPoint.childCount != 0;
+        return playerPushingToolHoldPoint.childCount != 0;
+    }
+
+    public bool PlayerHasHandTool()
+    {
+        return playerHandToolHoldPoint.childCount != 0;
     }
 
     public Transform GetCollectablesHoldPoint()
@@ -153,5 +167,10 @@ public class Player : MonoBehaviour
         return collectablesHoldPoint;
     }
 
-   
+    public bool PlayerHasNoTool()
+    {
+        return PlayerHasPushingTool() && PlayerHasHandTool();
+    }
+
+
 }
