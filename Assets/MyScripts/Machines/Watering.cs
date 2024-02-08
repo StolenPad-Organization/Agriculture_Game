@@ -1,9 +1,15 @@
+using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Watering : MonoBehaviour
 {
+
+
+    public event EventHandler OnWaterEmptyIn;
+    public event EventHandler OnWaterEmptyOut;
     private FarmingAreaSatus farmingAreaSatus;
 
 
@@ -11,12 +17,14 @@ public class Watering : MonoBehaviour
 
 
     private bool isWatering;
+    private Vector3 plantEndPosition = new Vector3(0, 0.29f, 0);
+    private float plantScale = 2f;
 
 
 
     private void Update()
     {
-        
+
         if (farmingAreaSatus != null)
         {
             if (farmingAreaSatus.IsPlantingComplete())
@@ -32,15 +40,27 @@ public class Watering : MonoBehaviour
     {
         if (isWatering && collision.gameObject.CompareTag(Constants.DIRT))
         {
-            Debug.Log("inside");
-            if ( waterAmount != 0 && collision.transform.GetChild(0).gameObject.activeSelf && !collision.transform.GetChild(1).gameObject.activeSelf)
+            if (waterAmount != 0 && collision.transform.GetChild(0).gameObject.activeSelf && !collision.transform.GetChild(1).gameObject.activeSelf)
             {
-                
                 waterAmount--;
                 Transform plantTransform = collision.transform.GetChild(1);
+                Transform seedTransform = collision.transform.GetChild(0);
                 plantTransform.gameObject.SetActive(true);
-                Debug.Log(plantTransform.gameObject);
+                plantTransform.DOScale(Vector3.one * plantScale, 2.5f).SetEase(Ease.OutBounce);
+                plantTransform.DOMove(plantTransform.position + plantEndPosition, 2f)
+                    .SetEase(Ease.OutBounce)
+                    .OnComplete(() =>
+                    {
+                        seedTransform.gameObject.SetActive(false);
+                    });
             }
+            if (waterAmount == 0)
+            {
+                OnWaterEmptyIn?.Invoke(this, new EventArgs());
+            }
+            Debug.Log("plant grow");
+
+
         }
     }
 
@@ -51,6 +71,14 @@ public class Watering : MonoBehaviour
             this.farmingAreaSatus = farmingAreaSatus;
         }
 
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.TryGetComponent(out FarmingAreaSatus farmingAreaSatus))
+        {
+            OnWaterEmptyOut?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     public int GetWaterAmount()

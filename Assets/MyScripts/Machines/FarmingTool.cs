@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,18 +28,19 @@ public class FarmingTool : MonoBehaviour
         if (!Player.Instance.PlayerHasNoTool())
         {
             transform.parent = playerHoldPoint;
-            transform.localPosition = Vector3.zero;
-            transform.localRotation = initialRotation;
+            transform.DOLocalMove(Vector3.zero, 0.2f); 
+            transform.DOLocalRotate(initialRotation.eulerAngles, 0.2f); 
         }
     }
 
     public void PlayerUnuseTool(Transform restPosition)
     {
-        if(Player.Instance.PlayerHasPushingTool() || Player.Instance.PlayerHasHandTool())
+        if (Player.Instance.PlayerHasPushingTool() || Player.Instance.PlayerHasHandTool())
         {
             transform.parent = restPosition;
-            transform.localPosition = restPosition.localPosition;
-            transform.localRotation = restPosition.localRotation;
+            
+            transform.DOLocalMove(restPosition.localPosition, 0.5f); 
+            transform.DOLocalRotate(restPosition.localRotation.eulerAngles, 0.5f); 
         }
     }
 
@@ -47,8 +49,8 @@ public class FarmingTool : MonoBehaviour
         if (!Player.Instance.PlayerHasNoTool())
         {
             transform.parent = HandPosition;
-            transform.localPosition = Vector3.zero;
-            transform.localRotation = initialRotation;
+            transform.DOLocalMove(Vector3.zero, 0.5f); 
+            transform.DOLocalRotate(initialRotation.eulerAngles, 0.5f); 
         }
     }
 

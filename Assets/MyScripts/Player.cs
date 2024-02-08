@@ -23,6 +23,8 @@ public class Player : MonoBehaviour
         Driving,
     }
 
+    public int moneyAmount;
+
     public State state;
 
     private void Awake()
@@ -139,6 +141,11 @@ public class Player : MonoBehaviour
                 farmingTool.PlayerHoldToolInHand(playerHandToolHoldPoint);
             }
             
+        }
+        if(other.TryGetComponent(out Money money))
+        {
+            Destroy(money.gameObject);
+            MoneyManager.Instance.AddMoney();
         }
     }
 

@@ -8,6 +8,7 @@ public class FarmingAreaSatus : MonoBehaviour
     [SerializeField] private int farmingAreaChunksNumber = 512;
     private int grassChunksNumber = 0;
     private int activeChunkCount = 0;
+    private int seedsNumber = 0;
     private int plantsNumber = 0;
     [SerializeField] private Transform grassParent;
     [SerializeField] private Transform readyToPlantParent;
@@ -17,8 +18,21 @@ public class FarmingAreaSatus : MonoBehaviour
 
     private void Update()
     {
-        //IsGrassCompleted();
-        //IsPreparedLandCompleted();
+    }
+
+
+
+    public bool IsCleaning()
+    {
+        grassChunksNumber = grassParent.childCount;
+        if (grassChunksNumber <= 0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
 
@@ -43,13 +57,13 @@ public class FarmingAreaSatus : MonoBehaviour
         {
             if (child.gameObject.TryGetComponent(out MeshRenderer meshRenderer))
             {
-                if(meshRenderer.enabled)
+                if (meshRenderer.enabled)
                 {
                     activeChunkCount++;
                 }
             }
         }
-        
+
 
         if (activeChunkCount >= farmingAreaChunksNumber)
         {
@@ -64,13 +78,38 @@ public class FarmingAreaSatus : MonoBehaviour
 
     public bool IsPlantingComplete()
     {
-        plantsNumber = 0;
-        foreach(Transform child in readyToPlantParent)
+        seedsNumber = 0;
+        foreach (Transform child in readyToPlantParent)
         {
-            if(child.GetChild(0).TryGetComponent(out Transform transform))
+            if (child.GetChild(0).TryGetComponent(out Transform transform))
             {
-                if(transform.gameObject.activeSelf)
+                if (transform.gameObject.activeSelf)
                 {
+                    seedsNumber++;
+                }
+            }
+        }
+        if (seedsNumber >= farmingAreaChunksNumber)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
+    public bool IsWateringComplete()
+    {
+        plantsNumber = 0;
+        foreach (Transform child in readyToPlantParent)
+        {
+            if (child.childCount > 1)
+            {
+                if (child.GetChild(1).gameObject.activeSelf)
+                {
+
                     plantsNumber++;
                 }
             }
@@ -83,7 +122,13 @@ public class FarmingAreaSatus : MonoBehaviour
         {
             return false;
         }
-        
+
+    }
+
+
+    private bool IsAnimationCompleted(Animator animator)
+    {
+        return animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f;
     }
 
     public Transform GetFarmingArea()

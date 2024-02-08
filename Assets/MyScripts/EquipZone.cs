@@ -22,7 +22,7 @@ public class EquipZone : MonoBehaviour
     private float unEquipTimerMax = 2f;
     [SerializeField] private FarmingTool farmingTool;
     [SerializeField] private Transform ToolresetPoint;
-    [SerializeField] private GameObject visuals;
+    [SerializeField] private GameObject LoadVisuals;
 
 
 
@@ -51,7 +51,7 @@ public class EquipZone : MonoBehaviour
                 {
                     progressNormalized = 0f
                 });
-                visuals.SetActive(false);
+                LoadVisuals.SetActive(false);
 
             }
         }
@@ -67,7 +67,7 @@ public class EquipZone : MonoBehaviour
                 progressNormalized = 0
             });
             unEquipTimer = 0;
-            visuals.SetActive(false);
+            LoadVisuals.SetActive(false);
         }
     }
 
@@ -76,7 +76,7 @@ public class EquipZone : MonoBehaviour
     {
         if (other.gameObject.TryGetComponent(out FarmingTool farmingTool) && (Player.Instance.PlayerHasPushingTool() || Player.Instance.PlayerHasHandTool()))
         {
-            visuals.SetActive(true);
+            LoadVisuals.SetActive(true);
         }
     }
 
